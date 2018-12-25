@@ -1,6 +1,8 @@
 package ua.nure.pihnastyi.practice2;
 
 
+import java.util.Iterator;
+
 public class MyListImpl implements MyList {
 
 
@@ -11,6 +13,10 @@ public class MyListImpl implements MyList {
         size = 0;
         myElements = new Object[0];
 
+    }
+
+    public Iterator<Object> iterator() {
+        return new IteratorImpl();
     }
 
     @Override
@@ -123,6 +129,51 @@ public class MyListImpl implements MyList {
         }
         result.append("]");
         return result.toString();
+    }
+
+    private class IteratorImpl implements Iterator<Object> {
+
+        private int index;
+        boolean wasRemove;
+        boolean wasNext;
+
+        IteratorImpl() {
+            index = 0;
+            wasNext = false;
+            wasRemove = false;
+
+
+        }
+
+        @Override
+        public boolean hasNext() {
+
+            return index < myElements.length;
+        }
+
+        @Override
+        public Object next() {
+            wasNext = true;
+            wasRemove = false;
+            return myElements[index++];
+        }
+
+        @Override
+        public void remove() {
+            if (!wasNext) {
+                throw new IllegalStateException();
+            }
+            if (wasRemove) {
+                throw new IllegalStateException();
+            } else {
+                wasRemove = true;
+                index--;
+                deleteElementById(index);
+
+
+            }
+
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 package ua.nure.pihnastyi.practice2;
 
-public interface MyList {
+public interface MyList extends Iterable<Object> {
     // appends the specified element
     // to the end of this list
     void add(Object e);
