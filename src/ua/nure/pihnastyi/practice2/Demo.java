@@ -1,7 +1,7 @@
 package ua.nure.pihnastyi.practice2;
 
 import java.util.Iterator;
-import java.util.ListIterator;
+
 
 public class Demo {
     public static void main(String[] args) {
@@ -29,7 +29,7 @@ public class Demo {
             System.out.print(el);
         }
         System.out.println();
-         //3
+        //3
         System.out.println(list.size());
         // false
         System.out.println(list.contains("B"));
@@ -63,18 +63,18 @@ public class Demo {
         list.add(3);
         list.add(4);
 
-  //       1 2 3 4
+        //       1 2 3 4
         Iterator<Object> it = list.iterator();
         while (it.hasNext()) {
             System.out.print(it.next() + " ");
         }
         System.out.println();
-       //  [1, 3, 4]
+        //  [1, 3, 4]
         it = list.iterator();
         it.next();
         it.next();
         it.remove();
-     System.out.println(list);
+        System.out.println(list);
 
         // 3
         System.out.println(it.next());
@@ -99,34 +99,35 @@ public class Demo {
         list.add(3);
         list.add(4);
 
-//        // 1 2 3 4
-//        ListIterator lit = ((ListIterable)list).listIterator();
-//        while (lit.hasNext()) {
-//            System.out.print(lit.next() + " ");
-//        }
-//        System.out.println();
-//        // 4 3 2 1
-//        while (lit.hasPrevious()) {
-//            System.out.print(lit.previous() + " ");
-//        }
-//        System.out.println();
-//
-//        list = new MyListImpl();
-//        lit = ((ListIterable)list).listIterator();
-//        // false
-//        System.out.println(lit.hasNext());
-//
-//        // false
-//        System.out.println(lit.hasPrevious());
-//        // Elemenet
-//        list.add("Element");
-//        lit = ((ListIterable)list).listIterator();
-//        System.out.println(lit.next());
-//
-//        // false
-//        System.out.println(lit.hasNext());
-//
-//        // true
-//        System.out.println(lit.hasPrevious());
+        // 1 2 3 4
+        ListIterator lit = ((ListIterable) list).listIterator();
+        while (lit.hasNext()) {
+            System.out.print(lit.next() + " ");
+        }
+        lit.previous();
+        System.out.println();
+        // 4 3 2 1
+        while (lit.hasPrevious()) {
+            System.out.print(lit.previous() + " ");
+        }
+        System.out.println();
+
+        list = new MyListImpl();
+        lit = ((ListIterable) list).listIterator();
+        // false
+        System.out.println(lit.hasNext());
+
+        // false
+        System.out.println(lit.hasPrevious());
+        // Elemenet
+        list.add("Element");
+        lit = ((ListIterable) list).listIterator();
+        System.out.println(lit.next());
+
+        // false
+        System.out.println(lit.hasNext());
+
+        // true
+        System.out.println(lit.hasPrevious());
     }
 }

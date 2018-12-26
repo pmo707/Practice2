@@ -3,7 +3,7 @@ package ua.nure.pihnastyi.practice2;
 
 import java.util.Iterator;
 
-public class MyListImpl implements MyList {
+class MyListImpl implements MyList, ListIterable {
 
 
     private Object[] myElements;
@@ -91,24 +91,24 @@ public class MyListImpl implements MyList {
     @Override
     public boolean containsAll(MyList c) {
         Object[] myC = c.toArray();
-        int coutMatch = 0;
+        int countMatch = 0;
 
         for (int i = 0; i < myC.length; i++) {
             for (int j = 0; j < myElements.length; j++) {
                 if (myC[i] != null) {
                     if (myC[i].equals(myElements[j])) {
-                        coutMatch++;
+                        countMatch++;
                         break;
                     }
                 } else {
                     if (myC[i] == (myElements[j])) {
-                        coutMatch++;
+                        countMatch++;
                         break;
                     }
                 }
             }
         }
-        if (coutMatch == myC.length) {
+        if (countMatch == myC.length) {
             return true;
         } else {
             return false;
@@ -131,11 +131,17 @@ public class MyListImpl implements MyList {
         return result.toString();
     }
 
+    public ListIterator listIterator() {
+        return new ListIteratorImpl();
+    }
+
     private class IteratorImpl implements Iterator<Object> {
 
-        private int index;
+        protected int index;
         boolean wasRemove;
         boolean wasNext;
+        boolean wasSet;
+        boolean wasPrevious;
 
         IteratorImpl() {
             index = 0;
@@ -155,6 +161,7 @@ public class MyListImpl implements MyList {
         public Object next() {
             wasNext = true;
             wasRemove = false;
+            wasPrevious = false;
             return myElements[index++];
         }
 
@@ -174,6 +181,46 @@ public class MyListImpl implements MyList {
             }
 
         }
+    }
+
+    private class ListIteratorImpl extends IteratorImpl implements ListIterator {
+
+        ListIteratorImpl() {
+            wasSet = false;
+            wasPrevious = false;
+
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return (index <= 0) ? false : true;
+        }
+
+        @Override
+        public Object previous() {
+            wasPrevious = true;
+            wasNext = false;
+            wasSet = false;
+            return myElements[--index];
+        }
+
+        @Override
+        public void set(Object e) {
+
+            if (!wasPrevious) {
+                throw new IllegalStateException();
+            }
+            if (wasSet) {
+                throw new IllegalStateException();
+            } else {
+                wasSet = true;
+                if (wasNext || wasPrevious) {
+                    myElements[index] = e;
+                }
+            }
+
+        }
+
     }
 }
 
