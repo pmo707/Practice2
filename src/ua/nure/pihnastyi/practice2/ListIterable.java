@@ -1,5 +1,5 @@
 package ua.nure.pihnastyi.practice2;
 
-interface ListIterable {
+public interface ListIterable {
     ListIterator listIterator();
 }

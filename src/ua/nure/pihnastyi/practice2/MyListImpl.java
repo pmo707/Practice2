@@ -22,7 +22,8 @@ class MyListImpl implements MyList, ListIterable {
     @Override
     public void add(Object e) {
         myElements = java.util.Arrays.copyOf(myElements, myElements.length + 1);
-        myElements[size++] = e;
+        myElements[size] = e;
+        size++;
     }
 
     @Override
@@ -54,7 +55,7 @@ class MyListImpl implements MyList, ListIterable {
 
     private void deleteElementById(int indexOfDelete) {
         --size;
-        for (int j = indexOfDelete; j < size; ++j) {///проверить мб тут ошибка
+        for (int j = indexOfDelete; j < size; ++j) {
             myElements[j] = myElements[j + 1];
         }
         myElements = java.util.Arrays.copyOf(myElements, myElements.length - 1);
@@ -62,8 +63,13 @@ class MyListImpl implements MyList, ListIterable {
 
     @Override
     public Object[] toArray() {
-        return myElements;
+        Object[] newMyElements = new Object[size];
+        for (int i = 0; i < size; ++i) {
+            newMyElements[i] = myElements[i];
+        }
+        return newMyElements;
     }
+
 
     @Override
     public int size() {
@@ -138,62 +144,59 @@ class MyListImpl implements MyList, ListIterable {
     private class IteratorImpl implements Iterator<Object> {
 
         protected int index;
-        boolean wasRemove;
-        boolean wasNext;
-        boolean wasSet;
-        boolean wasPrevious;
+        protected boolean wasNext;
+        protected boolean wasRemove;
+        protected boolean wasSet;
+        protected boolean wasPrevious;
 
         IteratorImpl() {
-            index = 0;
+            index = -1;
             wasNext = false;
             wasRemove = false;
-
-
-        }
-
-        @Override
-        public boolean hasNext() {
-
-            return index < myElements.length;
-        }
-
-        @Override
-        public Object next() {
-            wasNext = true;
-            wasRemove = false;
-            wasPrevious = false;
-            return myElements[index++];
-        }
-
-        @Override
-        public void remove() {
-            if (!wasNext) {
-                throw new IllegalStateException();
-            }
-            if (wasRemove) {
-                throw new IllegalStateException();
-            } else {
-                wasRemove = true;
-                index--;
-                deleteElementById(index);
-
-
-            }
-
-        }
-    }
-
-    private class ListIteratorImpl extends IteratorImpl implements ListIterator {
-
-        ListIteratorImpl() {
             wasSet = false;
             wasPrevious = false;
 
         }
 
         @Override
+        public boolean hasNext() {
+
+            return index < myElements.length - 1;
+        }
+
+        @Override
+        public Object next() {
+            wasNext = true;
+            wasRemove = false;
+            wasSet = false;
+            wasPrevious = false;
+            if (hasNext() == false) {
+                throw new java.util.NoSuchElementException();
+            } else {
+                index++;
+                return myElements[index];
+            }
+        }
+
+        @Override
+        public void remove() {
+            if (wasRemove == true) {
+                throw new IllegalStateException();
+            } else {
+                wasRemove = true;
+                deleteElementById(index);
+                index--;
+            }
+
+        }
+
+
+    }
+
+    private class ListIteratorImpl extends IteratorImpl implements ListIterator {
+        @Override
         public boolean hasPrevious() {
-            return (index <= 0) ? false : true;
+            return index > -1;
         }
 
         @Override
@@ -201,26 +204,23 @@ class MyListImpl implements MyList, ListIterable {
             wasPrevious = true;
             wasNext = false;
             wasSet = false;
-            return myElements[--index];
+            wasRemove = false;
+            if (hasPrevious() == false) {
+                return myElements[0];
+            } else {
+                return myElements[index--];
+            }
         }
 
         @Override
         public void set(Object e) {
-
-            if (!wasPrevious) {
-                throw new IllegalStateException();
-            }
-            if (wasSet) {
+            if (wasPrevious == false || wasNext == false) {
                 throw new IllegalStateException();
             } else {
                 wasSet = true;
-                if (wasNext || wasPrevious) {
-                    myElements[index] = e;
-                }
+                myElements[index] = e;
             }
-
         }
-
     }
 }
 
