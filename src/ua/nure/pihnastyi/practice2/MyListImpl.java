@@ -96,29 +96,12 @@ class MyListImpl implements MyList, ListIterable {
 
     @Override
     public boolean containsAll(MyList c) {
-        Object[] myC = c.toArray();
-        int countMatch = 0;
-
-        for (int i = 0; i < myC.length; i++) {
-            for (int j = 0; j < myElements.length; j++) {
-                if (myC[i] != null) {
-                    if (myC[i].equals(myElements[j])) {
-                        countMatch++;
-                        break;
-                    }
-                } else {
-                    if (myC[i] == (myElements[j])) {
-                        countMatch++;
-                        break;
-                    }
-                }
+        for (Object cObj : c) {
+            if (!this.contains(cObj)) {
+                return false;
             }
         }
-        if (countMatch == myC.length) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     @Override
@@ -155,12 +138,10 @@ class MyListImpl implements MyList, ListIterable {
             wasRemove = false;
             wasSet = false;
             wasPrevious = false;
-
         }
 
         @Override
         public boolean hasNext() {
-
             return index < myElements.length - 1;
         }
 
@@ -214,7 +195,7 @@ class MyListImpl implements MyList, ListIterable {
 
         @Override
         public void set(Object e) {
-            if (wasPrevious == false || wasNext == false) {
+            if (wasPrevious == false && wasNext == false) {
                 throw new IllegalStateException();
             } else {
                 wasSet = true;
