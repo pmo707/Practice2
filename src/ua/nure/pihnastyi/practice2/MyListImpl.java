@@ -127,17 +127,12 @@ class MyListImpl implements MyList, ListIterable {
     private class IteratorImpl implements Iterator<Object> {
 
         protected int index;
-        protected boolean wasNext;
-        protected boolean wasRemove;
-        protected boolean wasSet;
-        protected boolean wasPrevious;
+
+        protected boolean wasCall;
 
         IteratorImpl() {
             index = -1;
-            wasNext = false;
-            wasRemove = false;
-            wasSet = false;
-            wasPrevious = false;
+            wasCall = false;
         }
 
         @Override
@@ -147,11 +142,8 @@ class MyListImpl implements MyList, ListIterable {
 
         @Override
         public Object next() {
-            wasNext = true;
-            wasRemove = false;
-            wasSet = false;
-            wasPrevious = false;
-            if (hasNext() == false) {
+            wasCall = false;
+            if (!hasNext()) {
                 throw new java.util.NoSuchElementException();
             } else {
                 index++;
@@ -161,10 +153,10 @@ class MyListImpl implements MyList, ListIterable {
 
         @Override
         public void remove() {
-            if (wasRemove == true) {
+            if (wasCall) {
                 throw new IllegalStateException();
             } else {
-                wasRemove = true;
+                wasCall = true;
                 deleteElementById(index);
                 index--;
             }
@@ -182,11 +174,8 @@ class MyListImpl implements MyList, ListIterable {
 
         @Override
         public Object previous() {
-            wasPrevious = true;
-            wasNext = false;
-            wasSet = false;
-            wasRemove = false;
-            if (hasPrevious() == false) {
+            wasCall = false;
+            if (!hasPrevious()) {
                 return myElements[0];
             } else {
                 return myElements[index--];
@@ -195,10 +184,10 @@ class MyListImpl implements MyList, ListIterable {
 
         @Override
         public void set(Object e) {
-            if (wasPrevious == false && wasNext == false) {
+            if (wasCall) {
                 throw new IllegalStateException();
             } else {
-                wasSet = true;
+                wasCall = true;
                 myElements[index] = e;
             }
         }
